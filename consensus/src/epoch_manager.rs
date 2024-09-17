@@ -18,40 +18,50 @@ Key responsibilities include:
 /*
 Function List and Descriptions:
 
+### General Initialization and Epoch Management:
 - `new`: Initializes a new instance of the `EpochManager`.
 - `epoch_state`: Returns the current epoch state, ensuring it has started.
 - `epoch`: Retrieves the current epoch number.
-- `create_round_state`: Creates a new `RoundState` for managing timeouts and round transitions.
-- `create_proposer_election`: Sets up a proposer election mechanism based on epoch state and on-chain config.
-- `extract_epoch_proposers`: Extracts proposers for different epochs to facilitate leader elections.
-- `process_epoch_retrieval`: Handles an epoch retrieval request from peers.
-- `process_different_epoch`: Processes messages from a different epoch and handles discrepancies.
 - `initiate_new_epoch`: Initializes a new epoch based on received proof and reconfigures the system.
-- `spawn_block_retrieval_task`: Spawns a task for handling block retrieval requests.
-- `shutdown_current_processor`: Shuts down the current round manager and other epoch-specific components.
-- `start_recovery_manager`: Initiates the recovery manager in case of partial epoch recovery.
-- `init_payload_provider`: Initializes the payload manager and Quorum Store for transaction payloads.
-- `set_epoch_start_metrics`: Sets metrics for the start of a new epoch.
-- `start_round_manager`: Starts the round manager for handling consensus rounds in a new epoch.
-- `start_quorum_store`: Starts the Quorum Store for transaction batching and handling.
-- `create_network_sender`: Creates a network sender for consensus communication.
-- `try_get_rand_config_for_new_epoch`: Attempts to retrieve or generate randomness configurations for a new epoch.
 - `start_new_epoch`: Starts a new epoch, configuring components based on on-chain configurations.
 - `initialize_shared_component`: Initializes components shared across epochs, such as the network and payload manager.
-- `start_new_epoch_with_joltean`: Starts a new epoch using Joltean consensus (non-DAG).
-- `start_new_epoch_with_dag`: Starts a new epoch using DAG-based consensus.
-- `enable_quorum_store`: Determines if the Quorum Store should be enabled based on on-chain configuration.
-- `process_message`: Processes consensus messages received from peers.
-- `check_epoch`: Checks if a message is from the current epoch and processes it accordingly.
-- `filter_quorum_store_events`: Filters out Quorum Store events if it is disabled.
-- `forward_event_to`: Forwards an event to the appropriate channel.
-- `forward_event`: Routes the verified event to the correct processing channel (e.g., round manager, Quorum Store).
-- `process_rpc_request`: Handles RPC requests from peers, such as block retrieval or batch requests.
-- `process_local_timeout`: Processes a local timeout event, signaling round timeouts.
 - `await_reconfig_notification`: Waits for a reconfiguration notification to start a new epoch.
-- `start`: Starts the Epoch Manager, managing network and timeout events.
-- `equivalent_jwk_consensus_config_from_deprecated_resources`: Creates an equivalent JWK consensus config using deprecated resources.
+- `shutdown_current_processor`: Shuts down the current round manager and other epoch-specific components.
+- `set_epoch_start_metrics`: Sets metrics for the start of a new epoch.
+- `check_epoch`: Checks if a message is from the current epoch and processes it accordingly.
+
+### Round Management:
+- `create_round_state`: Creates a new `RoundState` for managing timeouts and round transitions.
+- `start_round_manager`: Starts the round manager for handling consensus rounds in a new epoch.
+- `process_local_timeout`: Processes a local timeout event, signaling round timeouts.
+- `spawn_block_retrieval_task`: Spawns a task for handling block retrieval requests.
+  
+### Proposer Election:
+- `create_proposer_election`: Sets up a proposer election mechanism based on epoch state and on-chain config.
+- `extract_epoch_proposers`: Extracts proposers for different epochs to facilitate leader elections.
+
+### Quorum Store:
+- `start_quorum_store`: Starts the Quorum Store for transaction batching and handling.
+- `init_payload_provider`: Initializes the payload manager and Quorum Store for transaction payloads.
+- `enable_quorum_store`: Determines if the Quorum Store should be enabled based on on-chain configuration.
+- `filter_quorum_store_events`: Filters out Quorum Store events if it is disabled.
+  
+### Message and RPC Handling:
+- `process_message`: Processes consensus messages received from peers.
+- `process_rpc_request`: Handles RPC requests from peers, such as block retrieval or batch requests.
+- `forward_event`: Routes the verified event to the correct processing channel (e.g., round manager, Quorum Store).
+- `forward_event_to`: Forwards an event to the appropriate channel.
+
+### Consensus:
+- `start_new_epoch_with_dag`: Starts a new epoch using DAG-based consensus.  
+- `start_new_epoch_with_joltean`: Starts a new epoch using Joltean consensus (non-DAG).
+- `equivalent_jwk_consensus_config_from_deprecated_resources`: Creates an equivalent JWK (JSON Web Key) consensus config using deprecated resources.
+note: JSON Web Key consensus AIP 67: https://github.com/aptos-foundation/AIPs/blob/main/aips/aip-67.md
+
+### other:
 - `load_consensus_key`: Loads the consensus private key for the current validator.
+- `try_get_rand_config_for_new_epoch`: Attempts to retrieve or generate randomness configurations for a new epoch.
+- `start_recovery_manager`: Initiates the recovery manager in case of partial epoch recovery.
 */
 
 
