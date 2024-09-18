@@ -2,44 +2,40 @@
 // SPDX-License-Identifier: Apache-2.0
 
 /*
-This file implements the Quorum Store for the Aptos consensus:
+Implements components of the Quorum Store, including batch generation, proof management, and quorum store initialization.
 
-- **Quorum Store Builder**: Decides between Direct Mempool or full Quorum Store mode and initializes components.
-- **Direct Mempool Quorum Store**: Fetches transactions from mempool, no full proof/batch management.
-- **InnerBuilder**: Full Quorum Store setup for batch generation, proof management, and network interaction.
-- **Batch & Proof Management**: Handles batch creation, proof validation, and coordination across validators.
-- **NetworkListener**: Manages network requests like batch retrieval.
+The Quorum Store is a component of the Aptos blockchain consensus mechanism that manages transaction batches and proofs of state. It is responsible for generating and validating batches of transactions, as well as creating and verifying proofs of state. The Quorum Store can operate in two modes: Direct Mempool mode, which fetches transactions directly from the mempool, and full Quorum Store mode, which manages batch generation and proof management.
 
-Allows flexible Quorum Store operation depending on the consensus layer needs.
-*/
 
-/*
 Function List and Descriptions:
 
 ### Quorum Store Builder:
+Decides between Direct Mempool or full Quorum Store mode and initializes components.
 - `init_payload_manager`: Initializes the payload manager and optionally sets up a channel for verified events.
 - `start`: Starts the Quorum Store depending on its type (DirectMempool or QuorumStore).
   
 ### Direct Mempool Quorum Store:
+Fetches transactions from mempool, no full proof/batch management.
 - `new`: Creates a new instance of `DirectMempoolInnerBuilder` to interface with mempool and Quorum Store.
 - `init_payload_manager`: Initializes the `DirectMempoolPayloadManager` without requiring event handling for verified events.
 - `start`: Starts the `DirectMempoolQuorumStore` task, which manages mempool interactions.
 
 ### InnerBuilder (Quorum Store Setup):
+Full Quorum Store setup for batch generation, proof management, and network interaction.
 - `new`: Initializes a new `InnerBuilder` for the Quorum Store, setting up various components such as storage, network, and batch management.
 - `create_batch_store`: Sets up the `BatchStore` and `BatchReader` for managing batch generation and retrieval.
 - `spawn_quorum_store`: Spawns all the main components of the Quorum Store, including the coordinator, batch generator, and proof manager.
 - `init_payload_manager`: Initializes the `QuorumStorePayloadManager`, linking the batch reader, coordinator, and consensus publisher.
 - `start`: Starts the fully initialized Quorum Store, including all batch and proof management components.
 
-### Batch Management:
+### Batch and proof Management:
+Handles batch creation, proof validation, and coordination across validators.
 - `create_batch_store`: Sets up the `BatchStore` for storing batches and the `BatchReader` for reading them.
 - `spawn_quorum_store`: Launches batch-related components like `BatchCoordinator`, `BatchGenerator`, and the `BatchStore` for storing and managing transaction batches.
-
-### Proof Management:
 - `spawn_quorum_store`: Spawns the `ProofCoordinator` and `ProofManager` to handle proof creation and validation within the Quorum Store.
   
 ### Network and Message Handling:
+Manages network requests like batch retrieval.
 - `spawn_quorum_store`: Spawns the `NetworkListener` to listen for Quorum Store network messages and handles batch retrieval requests.
 */
 
