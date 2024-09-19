@@ -243,6 +243,7 @@ impl MempoolNode {
         }
     }
 
+    /// broadcast transactions
     pub async fn receive_message(
         &mut self,
         protocol_id: ProtocolId,

@@ -397,6 +397,7 @@ impl TestHarness {
         let sender = self.mut_node(sender_id);
         let network_req = sender.get_next_network_req(network_id);
 
+        /// broadcast transactions
         // Handle outgoing message
         match network_req {
             PeerManagerRequest::SendDirectSend(remote_peer_id, msg) => {

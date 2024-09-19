@@ -44,6 +44,7 @@ use std::{
 };
 use thiserror::Error;
 
+/// from specs: Network message used for broadcast of pending transactions to remote peers
 /// Container for exchanging transactions with other Mempools.
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub enum MempoolSyncMsg {
@@ -557,6 +558,7 @@ impl<NetworkClient: NetworkClientInterface<MempoolSyncMsg>> MempoolNetworkInterf
         Ok((message_id, transactions, metric_label))
     }
 
+    /// broadcast transactions
     /// Sends a batch to the given peer
     async fn send_batch_to_peer(
         &self,

@@ -376,6 +376,7 @@ fn validate_and_add_transactions<NetworkClient, TransactionValidator>(
     let validation_results = transactions
         .par_iter()
         .map(|t| {
+            // shared mempool validates transactions
             let result = smp.validator.read().validate_transaction(t.0.clone());
             // Pre-compute the hash and length if the transaction is valid, before locking mempool
             if result.is_ok() {

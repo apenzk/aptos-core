@@ -337,6 +337,7 @@ async fn process_received_txns<NetworkClient, TransactionValidator>(
         .await;
 }
 
+/// broadcasting transactions in the network
 /// Handles all network messages.
 /// - Network messages follow a simple Request/Response framework to accept new transactions
 /// TODO: Move to RPC off of DirectSend
