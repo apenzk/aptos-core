@@ -650,6 +650,7 @@ impl TransactionStore {
         self.track_indices();
     }
 
+    /// specs: returns broadcast-ready transactions. there are 4 fn read_timeline with different signatures
     /// Read at most `count` transactions from timeline since `timeline_id`.
     /// This method takes into account the max number of bytes per transaction batch.
     /// Returns block of transactions along with their transaction ready times

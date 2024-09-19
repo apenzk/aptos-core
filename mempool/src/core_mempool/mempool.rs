@@ -272,6 +272,9 @@ impl Mempool {
 
     /// Used to add a transaction to the Mempool.
     /// Performs basic validation: checks account's sequence number.
+    /// Required behavior:
+    ///     adds the transaction to core mempool only if txn validation is successful and passes mempool checks
+    ///     returns status of adding transaction to mempool. 
     pub(crate) fn add_txn(
         &mut self,
         txn: SignedTransaction,
@@ -538,6 +541,7 @@ impl Mempool {
         self.transactions.gc_by_expiration_time(block_time);
     }
 
+    /// specs: returns broadcast-ready transactions. there are 4 fn read_timeline with different signatures
     /// Returns block of transactions and new last_timeline_id. For each transaction, the output includes
     /// the transaction ready time in millis since epoch
     pub(crate) fn read_timeline(

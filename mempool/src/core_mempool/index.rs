@@ -222,6 +222,7 @@ impl TimelineIndex {
         }
     }
 
+    /// specs: returns broadcast-ready transactions. there are 4 fn read_timeline with different signatures
     /// Read all transactions from the timeline since <timeline_id>.
     /// At most `count` transactions will be returned.
     /// If `before` is set, only transactions inserted before this time will be returned.
@@ -314,6 +315,7 @@ impl MultiBucketTimelineIndex {
         })
     }
 
+    /// specs: returns broadcast-ready transactions. there are 4 fn read_timeline with different signatures
     /// Read all transactions from the timeline since <timeline_id>.
     /// At most `count` transactions will be returned.
     pub(crate) fn read_timeline(
