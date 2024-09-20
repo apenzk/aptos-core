@@ -1948,6 +1948,7 @@ impl AccountTransactionsWithProof {
 #[allow(clippy::large_enum_variant)]
 #[cfg_attr(any(test, feature = "fuzzing"), derive(Arbitrary))]
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize, CryptoHasher, BCSCryptoHash)]
+
 pub enum Transaction {
     /// Transaction submitted by the user. e.g: P2P payment transaction, publishing module
     /// transaction, etc.
@@ -1967,6 +1968,18 @@ pub enum Transaction {
     /// The hash value inside is unique block id which can generate unique hash of state checkpoint transaction
     StateCheckpoint(HashValue),
 
+    /// https://github.com/aptos-foundation/AIPs/blob/main/aips/aip-64.md
+    /// Future applications necessitate the blockchain's ability to efficiently agree upon and update specific proposals on-chain. 
+    /// Validator transactions facilitate this process by enabling validators to swiftly propose changes and reach consensus in just a few seconds, 
+    /// a feat made possible by the low latency of the Aptos blockchain. 
+    /// In the absence of validator transactions, reaching such an agreement would be dependent on Aptos Governance, 
+    /// a more time-consuming process that not only spans several days or even weeks but also requires manual proposal submissions each time.
+    /// A typical usage of the validator transaction framework is for validators to update the on-chain configurations 
+    /// for another feature with minimum latency. Some Aptos features have adopt it as a building block.
+    /// For example
+    /// In on-chain randomness design, randomness generation key shares for epoch e validators are on-chain configurations. 
+    /// They are computed off-chain at the end of epoch e-1 and then published on chain using a ValidatorTransaction.
+    
     /// Transaction that only proposed by a validator mainly to update on-chain configs.
     ValidatorTransaction(ValidatorTransaction),
 
