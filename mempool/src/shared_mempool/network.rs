@@ -4,6 +4,34 @@
 
 //! Interface between Mempool and Network layers.
 
+
+/*
+This file defines the interface between Mempool and Network layers, handling the broadcasting and syncing of transactions across peers.
+
+Function List and Descriptions:
+
+- `MempoolSyncMsg`: Enum defining different network messages for broadcasting pending transactions between Mempools.
+- `MempoolSyncMsg::BroadcastTransactionsRequest`: Sends a broadcast request with a unique message ID and list of transactions.
+- `MempoolSyncMsg::BroadcastTransactionsResponse`: Acknowledges the broadcast and signals retry or backpressure when necessary.
+- `BroadcastError`: Enum capturing errors related to broadcasting transactions, such as network errors or peers not found.
+- `BroadcastPeerPriority`: Enum defining peer priority levels (Primary or Failover) for broadcasting transactions.
+- `MempoolNetworkInterface`: The main struct that manages transaction broadcasting and peer synchronization, encapsulating the core logic for handling upstream peers, broadcasting, and ACKs.
+- `MempoolNetworkInterface::new`: Initializes the network interface with the network client, configuration, and prioritized peer state.
+- `MempoolNetworkInterface::update_peers`: Updates the list of peers, adding new ones and disabling those no longer connected.
+- `MempoolNetworkInterface::update_prioritized_peers`: Updates the prioritized peers list, ensuring transactions are broadcasted to high-priority peers first.
+- `MempoolNetworkInterface::is_upstream_peer`: Determines whether a peer is an upstream peer based on network metadata.
+- `MempoolNetworkInterface::process_broadcast_ack`: Processes acknowledgment messages from peers, updating the broadcast state and retry/backoff logic.
+- `MempoolNetworkInterface::is_backoff_mode`: Checks if a peer is in backoff mode, which delays broadcasting to avoid overwhelming peers.
+- `MempoolNetworkInterface::determine_broadcast_batch`: Determines which transactions to broadcast to a peer, considering retries, pending transactions, and broadcast limits.
+- `MempoolNetworkInterface::send_batch_to_peer`: Sends a batch of transactions to a peer over the network.
+- `MempoolNetworkInterface::send_message_to_peer`: Sends a specific message (e.g., ACK or broadcast) to a peer.
+- `MempoolNetworkInterface::update_broadcast_state`: Updates the internal state after sending a broadcast, tracking pending broadcasts and retry messages.
+- `MempoolNetworkInterface::execute_broadcast`: Executes the full transaction broadcast process to a peer, including determining the batch, sending it, and tracking metrics.
+*/
+
+
+
+
 use crate::{
     counters,
     logging::{LogEntry, LogEvent, LogSchema},
