@@ -2,6 +2,30 @@
 // Parts of the project are originally copyright © Meta Platforms, Inc.
 // SPDX-License-Identifier: Apache-2.0
 
+/*
+This file sets up the shared mempool and its runtime environment by initializing the necessary components and spawning asynchronous tasks.
+It is responsible for setting up the core asynchronous processes required for shared mempool operations in a distributed environment.
+
+Function List and Descriptions:
+
+- `start_shared_mempool`:
+  - Initializes and starts the shared mempool by spawning tasks for transaction synchronization (`coordinator`), garbage collection (`gc_coordinator`), and optionally snapshot logging (`snapshot_job`).
+  - Parameters include the Tokio runtime handle, node configuration, mempool state, network client, event receivers, and subscribers.
+  - This function is critical for ensuring that shared mempool routines run concurrently.
+
+- `bootstrap`:
+  - Bootstraps the shared mempool by creating a dedicated runtime and initializing the core mempool and VM validator.
+  - Spawns the necessary tasks using `start_shared_mempool`.
+  - Returns the created runtime, allowing the shared mempool to operate in its own isolated environment.
+
+Core Tasks and Responsibilities:
+- `coordinator`: Handles network events and transaction broadcasts, coordinating between nodes.
+- `gc_coordinator`: Performs garbage collection on expired transactions based on system TTL.
+- `snapshot_job`: Periodically logs the internal state of the mempool for debugging and monitoring purposes.
+
+*/
+
+
 use crate::{
     core_mempool::CoreMempool,
     network::MempoolSyncMsg,
