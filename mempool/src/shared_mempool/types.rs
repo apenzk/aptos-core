@@ -2,6 +2,28 @@
 // Parts of the project are originally copyright © Meta Platforms, Inc.
 // SPDX-License-Identifier: Apache-2.0
 
+/*
+This file defines objects and types used by or related to the shared mempool, including the main SharedMempool struct, notification systems, scheduled broadcasts, and quorum store request handling.
+
+Function List and Descriptions:
+
+- `SharedMempool`: The primary struct containing shared mempool data and its configuration. It holds the core mempool, network interface, subscribers, validator, and other dependencies for transaction broadcast and processing.
+- `SharedMempool::new`: Initializes the SharedMempool with its dependencies, including the mempool, network client, validator, and database.
+- `SharedMempool::broadcast_within_validator_network`: Returns whether the transactions are broadcast within the validator network.
+- `SharedMempoolNotification`: Enum that represents different types of notifications for shared mempool events, such as peer state changes, new transactions, or acknowledgment.
+- `notify_subscribers`: Notifies subscribed clients of mempool events, broadcasting events such as new transactions or ACKs to subscribers.
+- `ScheduledBroadcast`: A struct representing a future scheduled broadcast, allowing for delayed broadcasts to peers based on backoff timing.
+- `QuorumStoreRequest`: Enum representing requests from the quorum store to mempool, including batch requests and notifications of rejected transactions.
+- `QuorumStoreRequest::fmt`: Formats the request for debugging purposes, providing insight into the details of each request.
+- `QuorumStoreResponse`: Enum representing the response from mempool to quorum store requests, such as providing a batch of transactions.
+- `PeerSyncState`: Represents the state of the last sync with a peer, including timeline IDs and broadcast information.
+- `MempoolMessageId`: A struct that encodes message IDs used to identify transactions sent to peers, including details such as the sender bucket and timeline indices.
+- `MempoolMessageId::decode`: Decodes the message ID into a map of timeline updates for each sender bucket.
+- `BroadcastInfo`: Stores information about broadcasts sent to a peer, including pending ACKs, retry messages, and backoff mode status.
+*/
+
+
+
 //! Objects used by/related to shared mempool
 use crate::{
     core_mempool::CoreMempool,
