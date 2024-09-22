@@ -2,6 +2,32 @@
 // Parts of the project are originally copyright © Meta Platforms, Inc.
 // SPDX-License-Identifier: Apache-2.0
 
+/*
+This file defines `MempoolTransaction`, which represents a transaction in the Aptos mempool, tracking its state, expiration time, sequence information, and insertion details. It includes methods for transaction management such as getting the sender, gas price, and estimating transaction size. It also provides enums and structs related to transaction insertion and readiness states.
+
+Function List and Descriptions:
+
+- `new`: Creates a new `MempoolTransaction` with relevant details like expiration time, sequence info, and insertion info.
+- `get_sender`: Returns the sender's account address for the transaction.
+- `get_gas_price`: Returns the gas price for the transaction.
+- `get_committed_hash`: Retrieves the committed hash of the transaction.
+- `get_estimated_bytes`: Estimates the memory size consumed by the transaction in the mempool.
+  
+Structs and Enums:
+
+- `TimelineState`: Enum representing the state of a transaction (Ready, NotReady, NonQualified).
+- `SequenceInfo`: Stores sequence information for a transaction.
+- `SubmittedBy`: Enum indicating the source of transaction submission (Client, Downstream, PeerValidator).
+- `InsertionInfo`: Contains insertion-related metadata like insertion time, readiness state, and counters for consensus pulls.
+
+Test Functions:
+
+- `test_estimated_bytes`: Tests the transaction size estimation.
+- `create_test_mempool_transaction`: Helper function to create a `MempoolTransaction` for testing.
+- `create_test_transaction`: Helper function to create a signed transaction for testing.
+*/
+
+
 use crate::{core_mempool::TXN_INDEX_ESTIMATED_BYTES, counters, network::BroadcastPeerPriority};
 use aptos_crypto::HashValue;
 use aptos_types::{account_address::AccountAddress, transaction::SignedTransaction};
