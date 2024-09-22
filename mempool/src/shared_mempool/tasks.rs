@@ -3,6 +3,30 @@
 // SPDX-License-Identifier: Apache-2.0
 
 //! Tasks that are executed by coordinators (short-lived compared to coordinators)
+
+/*
+This file defines tasks that are executed by shared mempool coordinators. 
+These tasks include broadcasting transactions, processing transaction submissions from clients and peers, handling quorum store requests, processing on-chain configuration updates, and handling transaction broadcasts, client submissions, and transaction lifecycle management.
+
+Function List and Descriptions:
+
+- `execute_broadcast`: Attempts to broadcast transactions to a peer and schedules the next broadcast with backoff if necessary.
+- `process_client_transaction_submission`: Handles direct transaction submission by clients, processes and validates the transactions, and sends the submission status to the client.
+- `process_client_get_transaction`: Fetches a transaction by its hash for a client request.
+- `process_transaction_broadcast`: Processes transactions received from other nodes, validates them, and responds with an acknowledgment to the sender.
+- `gen_ack_response`: Generates a response to a transaction broadcast, indicating whether backpressure is required.
+- `process_incoming_transactions`: Submits a list of transactions to the local mempool and returns their submission statuses.
+- `validate_and_add_transactions`: Validates the incoming transactions using VM validation and adds valid transactions to the mempool.
+- `log_txn_process_results`: Logs the results of processing transactions, including accepted, rejected, and invalid transactions.
+- `process_quorum_store_request`: Processes quorum store requests from consensus, such as getting batches of transactions or rejecting transactions.
+- `process_committed_transactions`: Removes committed transactions from the mempool, stops broadcasting them, and updates use case tracking.
+- `process_rejected_transactions`: Handles transactions rejected by consensus, removing them from the mempool.
+- `process_config_update`: Handles on-chain configuration updates, restarting the validator with new information and adjusting settings for the shared mempool.
+
+*/
+
+
+
 use super::types::MempoolMessageId;
 use crate::{
     core_mempool::{CoreMempool, TimelineState},
