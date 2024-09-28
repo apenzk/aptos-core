@@ -45,23 +45,23 @@ members = [
     "aptos-utils",
     "config",
     "config/global-constants",
-    # "consensus",
-    # "consensus/consensus-types",
-    # "consensus/safety-rules",
+    "consensus",
+    "consensus/consensus-types",
+    "consensus/safety-rules",
     # "crates/aptos",
     # "crates/aptos-admin-service",
     # "crates/aptos-api-tester",
     "crates/aptos-bcs-utils",
     "crates/aptos-bitvec",
     "crates/aptos-build-info",
-    # "crates/aptos-collections",
+    "crates/aptos-collections",
     "crates/aptos-compression",
     "crates/aptos-crypto",
     "crates/aptos-crypto-derive",
     # "crates/aptos-debugger",
     "crates/aptos-dkg",
     "crates/aptos-drop-helper",
-    # "crates/aptos-enum-conversion-derive",
+    "crates/aptos-enum-conversion-derive",
     # "crates/aptos-faucet/cli",
     # "crates/aptos-faucet/core",
     # "crates/aptos-faucet/metrics-server",
@@ -304,10 +304,10 @@ aptos-build-info = { path = "crates/aptos-build-info" }
 aptos-cached-packages = { path = "aptos-move/framework/cached-packages" }
 aptos-channels = { path = "crates/channel" }
 # aptos-cli-common = { path = "crates/aptos-cli-common" }
-# aptos-collections = { path = "crates/aptos-collections" }
+aptos-collections = { path = "crates/aptos-collections" }
 aptos-compression = { path = "crates/aptos-compression" }
 # aptos-consensus = { path = "consensus" }
-# aptos-consensus-notifications = { path = "state-sync/inter-component/consensus-notifications" }
+aptos-consensus-notifications = { path = "state-sync/inter-component/consensus-notifications" }
 aptos-consensus-types = { path = "consensus/consensus-types" }
 aptos-config = { path = "config" }
 # aptos-crash-handler = { path = "crates/crash-handler" }
@@ -327,7 +327,7 @@ aptos-event-notifications = { path = "state-sync/inter-component/event-notificat
 # aptos-executable-store = { path = "storage/executable-store" }
 aptos-executor = { path = "execution/executor" }
 aptos-block-partitioner = { path = "execution/block-partitioner" }
-# aptos-enum-conversion-derive = { path = "crates/aptos-enum-conversion-derive" }
+aptos-enum-conversion-derive = { path = "crates/aptos-enum-conversion-derive" }
 aptos-executor-service = { path = "execution/executor-service" }
 aptos-executor-test-helpers = { path = "execution/executor-test-helpers" }
 aptos-executor-types = { path = "execution/executor-types" }
@@ -339,7 +339,7 @@ aptos-experimental-runtimes = { path = "experimental/runtimes" }
 # aptos-faucet-core = { path = "crates/aptos-faucet/core" }
 # aptos-faucet-service = { path = "crates/aptos-faucet/service" }
 # aptos-faucet-metrics-server = { path = "crates/aptos-faucet/metrics-server" }
-# aptos-fallible = { path = "crates/fallible" }
+aptos-fallible = { path = "crates/fallible" }
 # aptos-forge = { path = "testsuite/forge" }
 aptos-framework = { path = "aptos-move/framework" }
 # fuzzer = { path = "testsuite/fuzzer" }
@@ -413,14 +413,14 @@ aptos-proxy = { path = "crates/proxy" }
 aptos-push-metrics = { path = "crates/aptos-push-metrics" }
 # aptos-rate-limiter = { path = "crates/aptos-rate-limiter" }
 # aptos-release-builder = { path = "aptos-move/aptos-release-builder" }
-# aptos-reliable-broadcast = { path = "crates/reliable-broadcast" }
+aptos-reliable-broadcast = { path = "crates/reliable-broadcast" }
 aptos-resource-viewer = { path = "aptos-move/aptos-resource-viewer" }
 aptos-rest-client = { path = "crates/aptos-rest-client" }
 # aptos-retrier = { path = "crates/aptos-retrier" }
 aptos-rocksdb-options = { path = "storage/rocksdb-options" }
 # aptos-rosetta = { path = "crates/aptos-rosetta" }
 aptos-runtimes = { path = "crates/aptos-runtimes" }
-# aptos-safety-rules = { path = "consensus/safety-rules" }
+aptos-safety-rules = { path = "consensus/safety-rules" }
 aptos-schemadb = { path = "storage/schemadb" }
 aptos-scratchpad = { path = "storage/scratchpad" }
 aptos-sdk = { path = "sdk" }
@@ -448,7 +448,7 @@ aptos-time-service = { path = "crates/aptos-time-service", features = [    "asyn
 aptos-types = { path = "types" }
 aptos-utils = { path = "aptos-utils" }
 # aptos-validator-interface = { path = "aptos-move/aptos-validator-interface" }
-# aptos-validator-transaction-pool = { path = "crates/validator-transaction-pool" }
+aptos-validator-transaction-pool = { path = "crates/validator-transaction-pool" }
 aptos-vault-client = { path = "secure/storage/vault" }
 aptos-vm = { path = "aptos-move/aptos-vm" }
 aptos-vm-logging = { path = "aptos-move/aptos-vm-logging" }
