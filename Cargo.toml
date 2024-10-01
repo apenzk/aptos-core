@@ -707,6 +707,9 @@ reqwest = { version = "0.11.11", features = [
     "multipart",
     "stream",
 ] }
+async-std = "1.10.0"
+tide = "0.16"
+surf = "2.3"
 # reqwest-middleware = "0.2.0"
 # reqwest-retry = "0.2.1"
 ring = { version = "0.16.20", features = ["std"] }
