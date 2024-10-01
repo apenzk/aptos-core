@@ -188,7 +188,7 @@ impl OrderedBlock {
         let validator_signer = ValidatorSigner::dummy(); // replace with actual initialization
         let block = Block::new_proposal(
             payload, // payload
-            0, // round
+            round, // round
             0, // timestamp_usecs
             quorum_cert, // quorum_cert
             &validator_signer, // validator_signer
