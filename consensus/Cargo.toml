@@ -73,6 +73,7 @@ once_cell = { workspace = true }
 ordered-float = { workspace = true }
 rand = { workspace = true }
 rayon = { workspace = true }
+reqwest = { workspace = true }
 scopeguard = { workspace = true }
 serde = { workspace = true }
 serde_bytes = { workspace = true }
@@ -84,6 +85,7 @@ thiserror = { workspace = true }
 tokio = { workspace = true }
 tokio-retry = { workspace = true }
 tokio-stream = { workspace = true }
+warp = { workspace = true }
 
 [dev-dependencies]
 aptos-cached-packages = { workspace = true }
