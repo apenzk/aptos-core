@@ -1,12 +1,14 @@
+// Copyright (c) Aptos Foundation
+// SPDX-License-Identifier: Apache-2.0
+
 use crate::consensus_observer::observer::block_service::{start_block_service_with_tokio, start_block_service_with_tide, OrderedBlockClient};
 use crate::consensus_observer::observer::ordered_blocks::OrderedBlockStore;
 use reqwest;
-use tokio::runtime::Builder;
 use async_std::task;
 use surf;
 
 
-/// This test function verifies the functionality of the ordered-block service client, 
+/// This test function verifies the functionality of the ordered-block service client,
 /// by checking if it can fetch the latest block from the block store and the REST API endpoint.
 
 #[test]
@@ -32,7 +34,7 @@ fn test_block_service_client_with_tide() {
         println!("\n - - - - - - - - - \n - - - - - - - - - Step 4: Checking that the block service is running via API");
         let health_check_url = "http://127.0.0.1:3030/health";
         match surf::get(health_check_url).await {
-            Ok(mut response) => {
+            Ok(response) => {
                 assert!(response.status() == 200, "Block service health check failed");
             }
             Err(err) => {
@@ -67,7 +69,7 @@ fn test_block_service_client_with_tide() {
                 println!("\n - - - - - - - - - \n - - - - - - - - - Last ordered block: {:?}", block_info);
             } else {
                 println!("\n - - - - - - - - - \n - - - - - - - - - No blocks found in the store.");
-            }    
+            }
         }
 
 
@@ -100,8 +102,8 @@ fn test_block_service_client_with_tide() {
 
 
 
-// This test does not work. The error is 
-// "Cannot start a runtime from within a runtime. This happens because a function (like `block_on`) attempted 
+// This test does not work. The error is
+// "Cannot start a runtime from within a runtime. This happens because a function (like `block_on`) attempted
 // to block the current thread while the thread is being used to drive asynchronous tasks."
 #[tokio::test]
 async fn test_block_service_client_tokio() {
@@ -110,19 +112,19 @@ async fn test_block_service_client_tokio() {
     let ordered_block_store = OrderedBlockStore::new(Default::default());
 
     // Step 2: Start the block service in a separate task
-    // We cannot start a runtime from within a runtime. Hence we cannot call start_block_service with await. 
+    // We cannot start a runtime from within a runtime. Hence we cannot call start_block_service with await.
     // Therefore we add a delay to ensure the block service has time to start before making requests to it.
     println!("\n - - - - - - - - - \n - - - - - - - - - Step 2: Starting the block service in a separate task");
     let ordered_block_store_clone = ordered_block_store.clone();
     tokio::spawn(async move {
         start_block_service_with_tokio(ordered_block_store_clone);
     });
-    
+
 
     std::thread::sleep(std::time::Duration::from_secs(2));
 
     // Step 2.1: Check that the block service is running by making a request to the health check endpoint
-    // We cannot start a runtime from within a runtime. Hence we cannot call client.get with await. 
+    // We cannot start a runtime from within a runtime. Hence we cannot call client.get with await.
     // Therefore we add a delay to ensure the block service has time to start before making requests to it.
     println!("\n - - - - - - - - - \n - - - - - - - - - Step 2.1: Checking that the block service is running");
     let health_check_url = "http://127.0.0.1:3030/health";
@@ -134,13 +136,13 @@ async fn test_block_service_client_tokio() {
     let response = tokio::task::spawn_blocking(move || {
         // Create a new runtime within this blocking task
         let rt = tokio::runtime::Runtime::new().unwrap();
-        
+
         // Run the async request within this newly created runtime
         rt.block_on(async {
             client.get(&health_check_url).send().await
         })
     }).await.unwrap();
-    
+
     match response {
         Ok(response) => {
             assert!(response.status().is_success(), "Block service health check failed");
@@ -180,7 +182,7 @@ async fn test_block_service_client_tokio() {
     let api_url = format!("http://127.0.0.1:3030/blocks/{}/{}", epoch, round);
     let response = reqwest::get(&api_url).await.unwrap();
     assert!(response.status().is_success());
-    
+
     let response_body: serde_json::Value = response.json().await.unwrap();
     assert_eq!(response_body["epoch"], epoch);
     assert_eq!(response_body["round"], round);
