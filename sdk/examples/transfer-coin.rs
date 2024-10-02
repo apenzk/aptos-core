@@ -1,6 +1,15 @@
 // Copyright © Aptos Foundation
 // SPDX-License-Identifier: Apache-2.0
 
+// This Rust program uses the Aptos SDK to interact with the Aptos blockchain. It performs the following tasks:
+// 1. Initializes clients to connect to the Aptos blockchain node and faucet service using URLs from environment variables or defaults to devnet.
+// 2. Creates two local accounts: Alice and Bob.
+// 3. Funds Alice's account using the Aptos faucet service and creates Bob's account on-chain.
+// 4. Prints the initial balances of both accounts.
+// 5. Transfers a specified amount of coins from Alice to Bob, waits for the transaction to complete, and prints intermediate balances.
+// 6. Transfers more coins from Alice to Bob, waits for the transaction to complete, and prints the final balances.
+
+
 use anyhow::{Context, Result};
 use aptos_sdk::{
     coin_client::CoinClient,
