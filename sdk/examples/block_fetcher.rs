@@ -1,7 +1,17 @@
 // Copyright © Aptos Foundation
 // SPDX-License-Identifier: Apache-2.0
 
-// run the script with `cargo run --example read_last_block`
+// This example script connects to a locally running Aptos full node to fetch and print blocks starting from the genesis.
+// It performs the following steps:
+// 1. Initializes a REST client to interact with the Aptos full node using the URL specified in the `NODE_URL` variable.
+// 2. Starts fetching blocks from the genesis block (height 0) and prints their details, including block height, block ID, timestamp, and number of transactions.
+// 3. Continuously polls the blockchain for new blocks. If a block is not found (indicating no new blocks), it waits a short time before retrying.
+// 4. The loop runs indefinitely, fetching and printing blocks as they become available.
+//
+// This script is designed to work with a local Aptos full node running on `http://0.0.0.0:8080/v1`.
+// In our tests the localnet was started with the following in the root of the repository.
+//      CARGO_NET_GIT_FETCH_WITH_CLI=true cargo run -p aptos-node -- --test
+
 
 use aptos_sdk::rest_client::Client;
 // use aptos_consensus_types::block::Block;
