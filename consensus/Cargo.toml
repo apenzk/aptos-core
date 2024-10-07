@@ -50,8 +50,8 @@ aptos-validator-transaction-pool = { workspace = true }
 aptos-vm = { workspace = true }
 async-trait = { workspace = true }
 async-std = { workspace = true }
-tide = { workspace = true }
 surf = { workspace = true }
+# tide = { workspace = true } # TODO this package creates unfortunately a circular dependency warning, thus commented it out for now. However block_service has broken functionality without it.
 bcs = { workspace = true }
 byteorder = { workspace = true }
 bytes = { workspace = true }

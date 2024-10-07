@@ -577,9 +577,6 @@ ff = { version = "0.13", features = ["derive"] }
 field_count = "0.1.1"
 file_diff = "1.0.0"
 firestore = "0.43.0"
-# TODO there may be a conflict of the `fixed` version introduced by a circular dependency. If so use
-# cargo update -p fixed --precise 1.25.1
-fixed = "1.25.1" # see comment above
 flate2 = "1.0.24"
 flexi_logger = "0.27.4"
 futures = "0.3.29"
@@ -712,8 +709,11 @@ reqwest = { version = "0.11.11", features = [
     "stream",
 ] }
 async-std = "1.10.0"
-tide = "0.16"
 surf = "2.3"
+# TODO there may be a conflict of the `fixed` version introduced by a circular dependency. If so use
+# cargo update -p fixed --precise 1.25.1
+fixed = "1.25.1" # see comment above
+# tide = "0.16" # TODO this leads to circular dependency
 reqwest-middleware = "0.2.0"
 reqwest-retry = "0.2.1"
 ring = { version = "0.16.20", features = ["std"] }
