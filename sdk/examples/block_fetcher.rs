@@ -9,8 +9,10 @@
 // 4. The loop runs indefinitely, fetching and printing blocks as they become available.
 //
 // This script is designed to work with a local Aptos full node running on `http://0.0.0.0:8080/v1`.
-// In our tests the localnet was started with the following in the root of the repository.
+// In our tests the localnet was started first with the following command at the root of the repository.
 //      CARGO_NET_GIT_FETCH_WITH_CLI=true cargo run -p aptos-node -- --test
+// then use in the sdk directory
+//      cargo run --example block_fetcher
 
 
 use aptos_sdk::rest_client::Client;

@@ -577,7 +577,9 @@ ff = { version = "0.13", features = ["derive"] }
 field_count = "0.1.1"
 file_diff = "1.0.0"
 firestore = "0.43.0"
-fixed = "1.25.1"
+# TODO there may be a conflict of the `fixed` version introduced by a circular dependency. If so use
+# cargo update -p fixed --precise 1.25.1
+fixed = "1.25.1" # see comment above
 flate2 = "1.0.24"
 flexi_logger = "0.27.4"
 futures = "0.3.29"
