@@ -61,11 +61,11 @@ impl OrderedBlockStore {
             .get(&(epoch, round))
             .map(|(ordered_block, _)| ordered_block.clone())
     }
-
-    /// Inserts the given ordered block into the ordered blocks. This function
-    /// assumes the block has already been checked to extend the current ordered
-    /// blocks, and that the ordered proof has been verified.
-    pub fn insert_ordered_block(&self, ordered_block: OrderedBlock) {
+    
+    /// Inserts the given ordered block into the ordered blocks.
+    /// This function assumes the block has already been checked
+    /// to extend the current ordered blocks, and that the ordered proof has been verified.
+    pub fn insert_ordered_block(&self, ordered_block: OrderedBlock) -> bool {
         // Verify that the number of ordered blocks doesn't exceed the maximum
         let max_num_ordered_blocks = self.consensus_observer_config.max_num_pending_blocks as usize;
         if self.ordered_blocks.lock().len() >= max_num_ordered_blocks {
@@ -76,7 +76,7 @@ impl OrderedBlockStore {
                     ordered_block.proof_block_info()
                 ))
             );
-            return; // Drop the block if we've exceeded the maximum
+            return false; // Indicate failure to insert
         }
 
         // Otherwise, we can add the block to the ordered blocks
@@ -96,7 +96,10 @@ impl OrderedBlockStore {
         self.ordered_blocks
             .lock()
             .insert((last_block_epoch, last_block_round), (ordered_block, None));
+
+        true // Indicate successful insertion
     }
+
 
     /// Removes the ordered blocks for the given commit ledger info. This will
     /// remove all blocks up to (and including) the epoch and round of the commit.

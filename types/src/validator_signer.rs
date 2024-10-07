@@ -29,6 +29,15 @@ impl ValidatorSigner {
         }
     }
 
+    /// Constructs a dummy signer with a random author and a private key generated from a fixed seed.
+    pub fn dummy() -> Self {
+        let zeroed_key = bls12381::PrivateKey::generate_for_testing();
+        Self::new(
+            AccountAddress::random(),
+            Arc::new(zeroed_key),
+        )
+    }
+
     /// Constructs a signature for `message` using `private_key`.
     pub fn sign<T: Serialize + CryptoHash>(
         &self,

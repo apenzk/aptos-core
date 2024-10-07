@@ -3,17 +3,14 @@
 
 use crate::consensus_observer::common::error::Error;
 use aptos_consensus_types::{
-    common::{BatchPayload, Payload},
-    pipelined_block::PipelinedBlock,
-    proof_of_store::{BatchInfo, ProofCache, ProofOfStore},
-};
-use aptos_crypto::hash::CryptoHash;
+    block::Block, common::{BatchPayload, Payload}, pipelined_block::PipelinedBlock,proof_of_store::{BatchInfo, ProofCache, ProofOfStore},quorum_cert::QuorumCert};
+use aptos_crypto::{hash::CryptoHash,HashValue};
 use aptos_types::{
+    aggregate_signature::AggregateSignature, 
     block_info::{BlockInfo, Round},
     epoch_change::Verifier,
     epoch_state::EpochState,
-    ledger_info::LedgerInfoWithSignatures,
-    transaction::SignedTransaction,
+    ledger_info::{LedgerInfo, LedgerInfoWithSignatures}, transaction::SignedTransaction, validator_signer::ValidatorSigner
 };
 use serde::{Deserialize, Serialize};
 use std::{
@@ -176,6 +173,38 @@ impl OrderedBlock {
     pub fn new(blocks: Vec<Arc<PipelinedBlock>>, ordered_proof: LedgerInfoWithSignatures) -> Self {
         Self {
             blocks,
+            ordered_proof,
+        }
+    }
+
+    /// Creates a dummy OrderedBlock for testing purposes
+    pub fn new_dummy(epoch: u64, round: u64) -> Self {
+        // Create a BlockInfo with dummy data
+        let block_info = BlockInfo::new(epoch, round, HashValue::random(), HashValue::random(), 0, 0, None);
+
+        // Create dummy block
+        let payload = Payload::DirectMempool(vec![]); // or any other variant of Payload
+        let quorum_cert = QuorumCert::dummy(); // replace with actual initialization
+        let validator_signer = ValidatorSigner::dummy(); // replace with actual initialization
+        let block = Block::new_proposal(
+            payload, // payload
+            round, // round
+            0, // timestamp_usecs
+            quorum_cert, // quorum_cert
+            &validator_signer, // validator_signer
+            vec![], // failed_authors
+        ).expect("Failed to create new proposal block");
+        let pipelined_block = Arc::new(PipelinedBlock::new_ordered(block));
+
+        // Create a dummy LedgerInfoWithSignatures
+        let ordered_proof = LedgerInfoWithSignatures::new(
+            LedgerInfo::new(block_info, HashValue::random()),
+            AggregateSignature::empty(),
+        );
+
+        // Construct the OrderedBlock
+        Self {
+            blocks: vec![pipelined_block],
             ordered_proof,
         }
     }
