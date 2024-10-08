@@ -19,6 +19,17 @@ This SDK provides all the necessary components for building on top of the Aptos 
 ## Installing Rust SDK
 Please refer to [Rust SDK Doc](https://aptos.dev/sdks/rust-sdk/) for details on how to install the Rust SDK.
 
+
+## Examples
+
+Examples are provided in the `examples` directory. To run the examples, use the following command:
+
+```bash
+cargo run --example <example_name>
+```
+
 ## License
 
 Aptos Core is licensed as [Apache 2.0](https://github.com/aptos-labs/aptos-core/blob/main/LICENSE).
+
+

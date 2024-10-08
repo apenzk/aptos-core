@@ -64,6 +64,10 @@ mod transaction_filter;
 mod transaction_shuffler;
 mod txn_hash_and_authenticator_deduper;
 
+#[cfg(test)]
+mod block_service_test; // Add this line to include block_service_test.rs
+
+
 use aptos_metrics_core::IntGauge;
 pub use consensusdb::create_checkpoint;
 /// Required by the smoke tests
