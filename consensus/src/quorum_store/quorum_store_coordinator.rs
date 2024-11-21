@@ -1,6 +1,20 @@
 // Copyright © Aptos Foundation
 // SPDX-License-Identifier: Apache-2.0
 
+/*
+This file implements the Quorum Store Coordinator, which manages communication between Quorum Store components like BatchGenerator, ProofCoordinator, and ProofManager.
+
+The coordinator receives commit notifications and shutdown signals, forwarding them to the relevant components. It ensures an orderly shutdown by sending commands to each component in sequence, maintaining proper operation during both regular execution and shutdown.
+
+Function List and Descriptions:
+
+- `new`: Creates a new instance of `QuorumStoreCoordinator`, initializing command channels for batch generation, proof coordination, and message handling.
+- `start`: Main event loop that listens for `CoordinatorCommand` messages, handling commit notifications and shutdown signals.
+- `CommitNotification`: Handles commit notifications by sending them to BatchGenerator, ProofCoordinator, and ProofManager for further processing.
+- `Shutdown`: Coordinates the shutdown process by sending shutdown commands to all components (BatchGenerator, ProofCoordinator, ProofManager, Remote BatchCoordinator, and NetworkListener) and waits for completion.
+*/
+
+
 use crate::{
     monitor,
     quorum_store::{

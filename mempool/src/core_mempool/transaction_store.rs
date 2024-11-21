@@ -2,6 +2,41 @@
 // Parts of the project are originally copyright © Meta Platforms, Inc.
 // SPDX-License-Identifier: Apache-2.0
 
+
+/*
+This file implements the `TransactionStore` for Aptos' Mempool, which is responsible for managing transactions submitted by users, ensuring they are ready for consensus or broadcast. The store keeps track of transactions' state, manages different indexes for efficient transaction retrieval, and performs garbage collection.
+
+The `TransactionStore` handles in-memory storage of transactions, checking for duplicate or invalid updates, and ensuring transactions are removed once committed or expired. It tracks various metrics, such as transaction latency and gas price upgrades.
+
+Function List and Descriptions:
+
+- `new`: Initializes the `TransactionStore` with the mempool configuration, setting up the in-memory transaction store and various indexes (priority, TTL, parking lot, etc.).
+- `get`: Retrieves a transaction by account address and sequence number.
+- `get_by_hash`: Fetches a transaction using its hash.
+- `get_with_ranking_score`: Returns a transaction with its ranking score.
+- `get_insertion_info_and_bucket`: Provides transaction insertion info and associated bucket.
+- `insert`: Inserts a transaction into the store and updates indexes, ensuring it passes all checks.
+- `commit_transaction`: Marks a transaction as committed and removes it from the store.
+- `reject_transaction`: Removes a transaction and updates the indexes accordingly.
+- `read_timeline`: Fetches a batch of transactions ready for broadcasting based on the timeline.
+- `timeline_range`: Retrieves a range of transactions from the timeline.
+- `gc_by_system_ttl`: Garbage collects old transactions based on system TTL.
+- `gc_by_expiration_time`: Garbage collects transactions based on client-specified expiration times.
+- `clean_committed_transactions`: Removes all committed transactions with sequence numbers less than or equal to a given sequence number.
+- `process_ready_transactions`: Moves transactions from parking lot to ready state for broadcast or consensus.
+- `gen_snapshot`: Generates a log of all transactions in the store.
+- `get_parking_lot_size`: Returns the current size of the parking lot index (used for tests).
+
+Logging Functions:
+
+- `log_ready_transaction`: Logs when a transaction becomes ready for consensus or broadcast.
+- `log_txn_latency`: Logs transaction latency at various stages.
+- `log_gc_event`: Logs garbage collection events.
+- `log_commit_transaction`: Logs committed transactions.
+- `log_reject_transaction`: Logs rejected transactions.
+*/
+
+
 use crate::{
     core_mempool::{
         index::{
@@ -650,6 +685,7 @@ impl TransactionStore {
         self.track_indices();
     }
 
+    /// specs: returns broadcast-ready transactions. there are 4 fn read_timeline with different signatures
     /// Read at most `count` transactions from timeline since `timeline_id`.
     /// This method takes into account the max number of bytes per transaction batch.
     /// Returns block of transactions along with their transaction ready times

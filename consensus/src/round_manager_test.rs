@@ -2,6 +2,56 @@
 // Parts of the project are originally copyright © Meta Platforms, Inc.
 // SPDX-License-Identifier: Apache-2.0
 
+/*
+This is the `round_manager_test` file, which tests the functionality of the `RoundManager` within the consensus component of the Aptos blockchain.
+
+### Structure of the File
+- **Imports**: The file imports various modules, including components related to block storage, networking, liveness, and utility functions.
+- **NodeSetup Struct**: This struct sets up the testing environment for nodes, including creating a `RoundManager`, block store, safety rules, mock execution client, and network components.
+  - **Methods**:
+    - `create_round_state`: Creates a `RoundState` with a fixed timeout interval.
+    - `create_proposer_election`: Creates a rotating proposer election based on the provided proposers.
+    - `create_nodes`: Initializes a list of nodes, setting up network communication and creating validators, storage, and `RoundManager` instances.
+    - `new`: Constructs a `NodeSetup` with all necessary components, including network setup, block store, safety rules, and mock execution client.
+    - `restart`: Restarts the node with existing configurations.
+    - `identity_desc`: Provides a string description of the node.
+    - `poll_next_network_event`, `next_network_event`, `next_network_message`: Methods to handle network events and messages.
+    - `no_next_msg`, `no_next_ordered`: Assert that no further messages or ordered blocks are available.
+    - `commit_next_ordered`: Commits the next ordered blocks to storage.
+    - `next_proposal`, `next_vote`, `next_commit_decision`: Retrieves the next proposal, vote, or commit decision message.
+    - `poll_block_retreival`: Checks for the next incoming block retrieval request.
+- **Test Cases**: Each test case checks specific behaviors of the `RoundManager` and consensus logic.
+  - **`new_round_on_quorum_cert`**: Verifies the start of a new round based on a quorum certificate.
+  - **`vote_on_successful_proposal`**: Checks that a vote is sent on a successful proposal.
+  - **`delay_proposal_processing_in_sync_only`**: Tests backpressure handling when proposal processing is delayed.
+  - **`no_vote_on_old_proposal`**: Ensures no votes are sent for outdated proposals.
+  - **`no_vote_on_mismatch_round`**: Checks that proposals skipping rounds are not voted on.
+  - **`sync_info_carried_on_timeout_vote`**: Ensures the highest quorum certificate is carried on a timeout vote.
+  - **`no_vote_on_invalid_proposer`**: Validates that proposals from non-proposers are not voted on.
+  - **`new_round_on_timeout_certificate`**: Tests that a round can be skipped if a proposal carries a timeout certificate.
+  - **`reject_invalid_failed_authors`**: Tests rejection of proposals with incorrect failed authors.
+  - **`response_on_block_retrieval`**: Checks response handling for block retrieval requests.
+  - **`recover_on_restart`**: Validates that a node can recover from storage on restart.
+  - **`nil_vote_on_timeout`**: Generates a NIL vote upon a timeout if no votes were sent in the round.
+  - **`vote_resent_on_timeout`**: Tests that the same vote is re-sent with a timeout signature upon a timeout.
+  - **`sync_on_partial_newer_sync_info`**: Tests synchronization on a partial sync info.
+  - **`safety_rules_crash`**: Simulates safety rules crashing and tests recovery mechanisms.
+  - **`echo_timeout`**: Tests echoing of timeout messages.
+  - **`no_next_test`**: Verifies that no unexpected messages are processed.
+  - **`commit_pipeline_test`**: Simulates a commit pipeline scenario.
+  - **`block_retrieval_test`**: Tests block retrieval in the presence of a lagging node.
+  - **`block_retrieval_timeout_test`**: Simulates a block retrieval timeout.
+  - **`forking_retrieval_test`**: Tests behavior when forking occurs during block retrieval.
+  - **`no_vote_on_proposal_ext_when_feature_disabled`**: Validates rejection of `ProposalExt` when the feature is disabled.
+  - **`no_vote_on_proposal_with_unexpected_vtxns`**: Tests rejection of proposals with unexpected validator transactions.
+  - **`no_vote_on_proposal_ext_when_receiving_limit_exceeded`**: Ensures proposals exceeding the receiving limit are rejected.
+
+- **Additional Helper Functions**:
+  - `start_replying_to_block_retreival`: Handles incoming block retrieval requests in the network.
+  - `assert_process_proposal_result`: Sets up a node and processes a proposal with specified validator transactions, asserting the result.
+*/
+
+
 use crate::{
     block_storage::{pending_blocks::PendingBlocks, BlockReader, BlockStore},
     counters,
@@ -507,6 +557,7 @@ impl NodeSetup {
             expected_rounds,
             self.identity_desc()
         );
+        // here ordered blocks are extracted. 
         let ordered_blocks = self.ordered_blocks_events.next().await.unwrap();
         let rounds = ordered_blocks
             .ordered_blocks

@@ -2,6 +2,23 @@
 // Parts of the project are originally copyright © Meta Platforms, Inc.
 // SPDX-License-Identifier: Apache-2.0
 
+/*
+This is the `mock_execution_client` file, which provides a mock implementation of the `TExecutionClient` trait. 
+It simulates the behavior of an execution client for consensus in a test environment.
+
+### Function List and Descriptions
+
+- **MockExecutionClient**: A mock struct used to test consensus-related functionalities without a real execution environment.
+  - `new`: Initializes a new `MockExecutionClient` with the provided state sync channel, executor channel, and a mock storage reference.
+  - `commit_to_storage`: Commits ordered blocks to the mock storage and sends a commit notification to the state sync client. This function:
+    - Updates the mock storage with the given ledger info.
+    - Collects transactions from the ordered blocks, removing them from the block cache.
+    - Sends the transactions to the state sync client.
+    - Executes the provided callback with the ordered blocks and proof.
+*/
+
+
+
 use crate::{
     error::StateSyncError,
     network::{IncomingCommitRequest, IncomingRandGenRequest},
@@ -90,6 +107,16 @@ impl MockExecutionClient {
     }
 }
 
+/*
+- Implements the `TExecutionClient` trait:
+  - `start_epoch`: Placeholder function that initializes the start of a new epoch (no-op in this mock implementation).
+  - `get_execution_channel`: Returns a clone of the executor channel.
+  - `finalize_order`: Finalizes the order of blocks, inserts them into the block cache, and sends them to the buffer manager via the execution channel.
+  - `send_commit_msg`: Sends a commit message to a peer (returns `Ok` in this mock implementation).
+  - `sync_to`: Mocks synchronization to a specified ledger info by updating the mock storage.
+  - `reset`: Resets the state based on the target ledger info (no-op in this mock implementation).
+  - `end_epoch`: Marks the end of an epoch (no-op in this mock implementation).
+*/
 #[async_trait::async_trait]
 impl TExecutionClient for MockExecutionClient {
     async fn start_epoch(

@@ -2,6 +2,25 @@
 // Parts of the project are originally copyright © Meta Platforms, Inc.
 // SPDX-License-Identifier: Apache-2.0
 
+
+/*
+This file handles the runtime coordination and task spawning for the shared mempool. It processes network events, client requests, quorum store requests, and transaction broadcasts, and manages periodic tasks like garbage collection and mempool snapshots.
+
+Function List and Descriptions:
+
+- `coordinator`: Main function coordinating network events, client requests, quorum store requests, and scheduled broadcasts. It periodically updates peers and spawns tasks for different events.
+- `spawn_commit_notification_handler`: Spawns a task to handle commit notifications from state sync.
+- `handle_client_request`: Handles `MempoolClientRequest`, such as submitting transactions or fetching transactions by hash.
+- `handle_commit_notification`: Removes committed transactions from the local mempool immediately to stop broadcasting them.
+- `handle_mempool_reconfig_event`: Processes reconfiguration events and updates the transaction validator.
+- `process_received_txns`: Processes transactions received via network events and adds them to the mempool.
+- `handle_network_event`: Manages inbound network events such as transaction broadcasts and responses.
+- `handle_update_peers`: Updates peer connections, processes peer state changes, and triggers broadcasts to new upstream peers.
+- `gc_coordinator`: Periodically garbage collects expired transactions based on SystemTTL.
+- `snapshot_job`: Periodically logs a snapshot of transactions in the core mempool for observation.
+*/
+
+
 //! Processes that are directly spawned by shared mempool runtime initialization
 use super::types::MempoolClientRequest;
 use crate::{
@@ -337,6 +356,7 @@ async fn process_received_txns<NetworkClient, TransactionValidator>(
         .await;
 }
 
+/// broadcasting transactions in the network
 /// Handles all network messages.
 /// - Network messages follow a simple Request/Response framework to accept new transactions
 /// TODO: Move to RPC off of DirectSend

@@ -243,6 +243,11 @@ impl ConsensusMock {
         Self(BTreeMap::new())
     }
 
+    // from mempool-specs: 
+    //      pulling a consensus block of transactions
+    //      Required behavior:
+    //          returns consensus-ready transactions
+    //          if there are multiple consensus-ready transactions, transactions with higher gas are returned first
     pub(crate) fn get_block(
         &mut self,
         mempool: &mut CoreMempool,

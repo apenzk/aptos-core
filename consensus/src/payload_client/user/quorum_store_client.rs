@@ -1,6 +1,11 @@
 // Copyright © Aptos Foundation
 // SPDX-License-Identifier: Apache-2.0
 
+/// This file defines the `QuorumStoreClient` struct and its implementation, which is responsible for
+/// pulling blocks from the Quorum Store in the Aptos blockchain consensus mechanism. It includes
+/// methods for creating a new client, pulling payloads internally, and implementing the `UserPayloadClient`
+/// trait to handle payload requests based on various parameters and conditions.
+
 use crate::{
     counters::WAIT_FOR_FULL_BLOCKS_TRIGGERED,
     error::QuorumStoreError,
@@ -89,6 +94,12 @@ impl QuorumStoreClient {
     }
 }
 
+// Implementation of the UserPayloadClient trait for QuorumStoreClient.
+// This implementation defines the pull method, which is responsible for pulling payloads
+// from the Quorum Store based on the provided parameters. The method continuously polls
+// the Quorum Store until a payload is available or the maximum polling time is reached.
+// It also includes logic to handle cases where the payload should be returned even if it is not full,
+// based on the recent fill fraction and the number of pending uncommitted blocks.
 #[async_trait::async_trait]
 impl UserPayloadClient for QuorumStoreClient {
     async fn pull(

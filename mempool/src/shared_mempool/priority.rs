@@ -1,6 +1,43 @@
 // Copyright © Aptos Foundation
 // SPDX-License-Identifier: Apache-2.0
 
+/*
+This file handles peer prioritization in the shared mempool by comparing peers based on network ID, ping latency, and validator distance. It maintains state for peer prioritization, updating the list of prioritized peers based on various criteria.
+
+The system divides transactions into buckets and assigns these buckets to peers based on their priority. BroadcastPeerPriority is used to assign different priorities (like Primary and Failover) to peers. Peers with a higher priority (e.g., Primary) are sent transactions sooner or more consistently than those with lower priority (e.g., Failover).
+
+Function List and Descriptions:
+
+- `PrioritizedPeersComparator`:
+  - `new`: Initializes a comparator for peer prioritization.
+  - `compare_simple`: Provides a basic peer comparison based on network ID and peer hash.
+  - `compare_intelligent`: Provides an intelligent peer comparison based on network ID, validator distance, and ping latency.
+  - `compare_hash`: Compares peers by hashing their peer IDs.
+  - `hash_peer_id`: Hashes a peer's ID for consistent ordering across instances.
+
+- `PrioritizedPeersState`:
+  - `new`: Initializes the state for peer prioritization with a mempool config, node type, and time service.
+  - `get_peer_priority`: Returns the priority of a peer based on its position in the prioritized peers list.
+  - `get_sender_bucket_priority_for_peer`: Retrieves the priority of a peer for a specific sender bucket.
+  - `ready_for_update`: Determines if the prioritized peers list is ready for an update based on peer changes, ping latencies, or elapsed time.
+  - `sort_peers_by_priority`: Sorts peers by their priority using either simple or intelligent prioritization.
+  - `update_sender_bucket_for_peers`: Updates sender bucket assignments for peers based on traffic thresholds and peer metrics.
+  - `update_prioritized_peers`: Updates the list of prioritized peers based on peer metadata and traffic data.
+  - `update_prioritized_peer_metrics`: Logs and updates metrics based on peer priority changes.
+
+- Utility Functions:
+  - `get_distance_from_validators`: Retrieves the distance of a peer from validators using monitoring metadata.
+  - `get_peer_ping_latency`: Retrieves the ping latency of a peer from monitoring metadata.
+  - `compare_network_id`: Compares peers by network ID, prioritizing Validator > VFN > Public.
+  - `compare_ping_latency`: Compares peers by ping latency, prioritizing lower latencies.
+  - `compare_validator_distance`: Compares peers by validator distance, prioritizing closer peers.
+
+- Tests:
+  - Various unit tests for comparing peers, updating prioritized peers, and ensuring proper assignment of sender buckets.
+  - Includes test cases for both intelligent and simple peer prioritization, ensuring consistent peer sorting.
+*/
+
+
 use super::types::MempoolSenderBucket;
 use crate::{counters, network::BroadcastPeerPriority};
 use aptos_config::{

@@ -1,6 +1,27 @@
 // Copyright © Aptos Foundation
 // SPDX-License-Identifier: Apache-2.0
 
+
+/*
+This file defines the `OrderedBlockStore` struct, which manages the storage and retrieval of ordered blocks in the consensus process.
+
+Function List and Descriptions:
+
+- `OrderedBlockStore`: Main struct for storing ordered blocks using a `BTreeMap`, indexed by (epoch, round).
+- `OrderedBlockStore::new`: Creates a new store with a given `ConsensusObserverConfig`.
+- `OrderedBlockStore::clear_all_ordered_blocks`: Clears all stored ordered blocks.
+- `OrderedBlockStore::get_all_ordered_blocks`: Returns a copy of all ordered blocks.
+- `OrderedBlockStore::get_last_ordered_block`: Retrieves the last inserted ordered block.
+- `OrderedBlockStore::get_ordered_block`: Fetches a block by its (epoch, round) if it exists.
+- `OrderedBlockStore::insert_ordered_block`: Adds a new block to the store, ensuring it doesn’t exceed the maximum limit.
+- `OrderedBlockStore::remove_blocks_for_commit`: Removes blocks up to a specified commit point.
+- `OrderedBlockStore::update_commit_decision`: Updates the commit decision for a block.
+- `OrderedBlockStore::update_ordered_blocks_metrics`: Updates metrics for the stored blocks (count, rounds, etc.).
+
+The file also includes a test module to verify the store's functionalities (insert, retrieve, update, etc.).
+*/
+
+
 use crate::consensus_observer::{
     common::{
         logging::{LogEntry, LogSchema},
@@ -55,6 +76,7 @@ impl OrderedBlockStore {
     }
 
     /// Returns the ordered block for the given epoch and round (if any)
+    // can use this to retrieve a block based on round
     pub fn get_ordered_block(&self, epoch: u64, round: Round) -> Option<OrderedBlock> {
         self.ordered_blocks
             .lock()
@@ -498,6 +520,7 @@ mod test {
     }
 
     /// Creates and adds the specified number of ordered blocks to the ordered blocks
+    // possibly relevant?
     fn create_and_add_ordered_blocks(
         ordered_block_store: &OrderedBlockStore,
         num_ordered_blocks: usize,

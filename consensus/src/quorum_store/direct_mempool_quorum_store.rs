@@ -1,6 +1,27 @@
 // Copyright © Aptos Foundation
 // SPDX-License-Identifier: Apache-2.0
 
+
+/*
+This file implements a direct interaction with mempool for fetching transaction batches, bypassing quorum store logic.
+
+Key Points:
+- Directly fetches transaction batches from mempool.
+- Processes requests from the consensus layer for batches of transactions.
+- Filters out transactions already in progress using `PayloadFilter`.
+- Sends transaction batches back to consensus via callbacks.
+- Measures and logs performance for request handling and response times.
+
+Function List and Descriptions:
+
+- `new`: Creates a new instance of `DirectMempoolQuorumStore` with a consensus receiver and mempool sender.
+- `pull_internal`: Requests a batch of transactions from the mempool, excluding specified transactions, and waits for the response.
+- `handle_block_request`: Handles a block request by pulling transactions from the mempool, filtering them, and sending the result back to consensus.
+- `handle_consensus_request`: Processes the consensus payload request, determining the type of request and calling the appropriate handler.
+- `start`: Main event loop that listens for consensus requests and processes them by fetching transactions from the mempool.
+*/
+
+
 use crate::{monitor, quorum_store::counters};
 use anyhow::Result;
 use aptos_consensus_types::{

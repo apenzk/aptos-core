@@ -4,6 +4,48 @@
 
 //! Mempool is used to track transactions which have been submitted but not yet
 //! agreed upon.
+
+
+
+/*
+This file implements the core Mempool functionality, responsible for tracking and managing transactions that have been submitted but not yet included in a block.
+
+Mempool tracks the state of transactions, handles transaction addition, commits, rejections, and expiration, and provides interfaces for fetching transaction batches for consensus and broadcast.
+
+Function List and Descriptions:
+
+- `new`: Initializes the Mempool with the transaction store and system transaction timeout.
+- `commit_transaction`: Marks a transaction as committed, removing it from Mempool.
+- `reject_transaction`: Rejects and logs a transaction based on the validation or VM status.
+- `add_txn`: Adds a validated transaction to Mempool, ensuring it meets sequence number and other checks.
+- `get_by_hash`: Fetches a transaction from Mempool by its hash.
+- `gc`: Performs garbage collection of expired transactions based on the system TTL.
+- `gc_by_expiration_time`: Garbage collects transactions based on client-specified expiration times.
+- `get_batch`: Fetches a batch of transactions for consensus, excluding already chosen or invalid transactions.
+- `read_timeline`: Fetches transactions ready for broadcast based on a timeline.
+- `timeline_range`: Returns a range of transactions from a specified timeline for broadcasting.
+- `timeline_range_of_message`: Fetches transactions from the timeline across multiple sender buckets.
+- `gen_snapshot`: Generates a snapshot of the transactions currently in Mempool.
+- `get_parking_lot_size`: Returns the size of the Mempool's parking lot (used in tests).
+- `get_transaction_store`: Returns the underlying transaction store (used in tests).
+
+Logging Functions:
+
+- `log_commit_transaction`: Logs when a transaction is committed.
+- `log_reject_transaction`: Logs when a transaction is rejected, specifying the reason.
+- `log_txn_latency`: Logs transaction latency across different stages (e.g., consensus pulled, commit).
+- `log_consensus_pulled_latency`: Logs the time taken when transactions are pulled by consensus.
+- `log_commit_rejected_latency`: Logs latency for transactions rejected at commit.
+- `log_commit_and_parked_latency`: Logs latency for parked transactions before they are committed.
+- `log_commit_latency`: Logs the overall latency for a committed transaction, including parked time and timestamps.
+- `log_commit_and_parked_latency`: Logs latency for transactions that are parked before being committed.
+- `log_commit_latency`: Logs overall latency for committed transactions, including parked time and timestamps.
+*/
+
+
+
+
+
 use crate::{
     core_mempool::{
         index::TxnPointer,
@@ -272,6 +314,9 @@ impl Mempool {
 
     /// Used to add a transaction to the Mempool.
     /// Performs basic validation: checks account's sequence number.
+    /// Required behavior:
+    ///     adds the transaction to core mempool only if txn validation is successful and passes mempool checks
+    ///     returns status of adding transaction to mempool. 
     pub(crate) fn add_txn(
         &mut self,
         txn: SignedTransaction,
@@ -538,6 +583,7 @@ impl Mempool {
         self.transactions.gc_by_expiration_time(block_time);
     }
 
+    /// specs: returns broadcast-ready transactions. there are 4 fn read_timeline with different signatures
     /// Returns block of transactions and new last_timeline_id. For each transaction, the output includes
     /// the transaction ready time in millis since epoch
     pub(crate) fn read_timeline(

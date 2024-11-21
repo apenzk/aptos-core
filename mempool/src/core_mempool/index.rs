@@ -3,6 +3,60 @@
 // SPDX-License-Identifier: Apache-2.0
 
 /// This module provides various indexes used by Mempool.
+
+
+/*
+This file defines various indexes used by the Aptos Mempool for managing transactions. It includes structures like `PriorityIndex`, `TTLIndex`, `TimelineIndex`, `ParkingLotIndex`, and `MultiBucketTimelineIndex`. These indexes help organize transactions based on criteria such as gas price, expiration time, or readiness for broadcast. It also defines the `TxnPointer`, a logical reference to transactions in the Mempool.
+
+Function List and Descriptions:
+
+### `PriorityIndex`
+- `new`: Initializes the priority index.
+- `insert`: Adds a transaction to the priority index.
+- `remove`: Removes a transaction from the priority index.
+- `contains`: Checks if a transaction is present in the priority index.
+- `iter`: Returns an iterator for transactions ordered by priority.
+- `size`: Returns the size of the index.
+
+### `TTLIndex`
+- `new`: Initializes the TTL index with a function to get expiration time.
+- `insert`: Adds a transaction to the TTL index.
+- `remove`: Removes a transaction from the TTL index.
+- `gc`: Performs garbage collection by removing expired transactions.
+- `iter`: Returns an iterator over the TTL index.
+- `size`: Returns the size of the index.
+
+### `TimelineIndex`
+- `new`: Initializes the timeline index.
+- `read_timeline`: Fetches transactions ready for broadcast based on timeline ID and count.
+- `timeline_range`: Reads a range of transactions from the timeline.
+- `insert`: Adds a transaction to the timeline.
+- `remove`: Removes a transaction from the timeline.
+- `size`: Returns the size of the timeline index.
+
+### `MultiBucketTimelineIndex`
+- `new`: Initializes multiple timelines based on bucket ranges.
+- `read_timeline`: Fetches transactions ready for broadcast across multiple timelines.
+- `timeline_range`: Reads a range of transactions across multiple timelines.
+- `insert`: Adds a transaction to the appropriate timeline.
+- `remove`: Removes a transaction from the appropriate timeline.
+- `size`: Returns the total size of all timelines.
+- `get_bucket`: Returns the bucket corresponding to a transaction's ranking score.
+
+### `ParkingLotIndex`
+- `new`: Initializes the parking lot index for non-ready transactions.
+- `insert`: Adds a transaction to the parking lot.
+- `remove`: Removes a transaction from the parking lot.
+- `contains`: Checks if a transaction is in the parking lot.
+- `get_poppable`: Fetches a random transaction that can be evicted.
+- `size`: Returns the size of the parking lot.
+
+### `TxnPointer`
+- Implements conversion from `MempoolTransaction` and `OrderedQueueKey` to `TxnPointer`, which provides a reference to the transaction in the Mempool.
+*/
+
+
+
 use crate::core_mempool::transaction::{MempoolTransaction, SequenceInfo, TimelineState};
 use crate::{
     counters,
@@ -222,6 +276,7 @@ impl TimelineIndex {
         }
     }
 
+    /// specs: returns broadcast-ready transactions. there are 4 fn read_timeline with different signatures
     /// Read all transactions from the timeline since <timeline_id>.
     /// At most `count` transactions will be returned.
     /// If `before` is set, only transactions inserted before this time will be returned.
@@ -314,6 +369,7 @@ impl MultiBucketTimelineIndex {
         })
     }
 
+    /// specs: returns broadcast-ready transactions. there are 4 fn read_timeline with different signatures
     /// Read all transactions from the timeline since <timeline_id>.
     /// At most `count` transactions will be returned.
     pub(crate) fn read_timeline(
